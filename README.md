@@ -51,6 +51,8 @@ git clone https://github.com/ShimzaSajid/To-Do-List.git
 ## 📄 License
 
 This project is licensed under the **MIT License**.
-You’re free to use, modify, and share — just give proper credit.
+You are free to use, copy, modify, and distribute this project for personal or commercial purposes.  
+Just make sure to include the original license and give appropriate credit.
+
 
 
