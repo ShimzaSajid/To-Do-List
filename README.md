@@ -1,7 +1,3 @@
-You're almost there — your README is well-structured and covers all the essentials! Let me correct and **clean it up** just a bit for formatting, consistency, and clarity. Here's your **polished and final version**:
-
----
-
 # 📝 To-Do List Web App
 
 A beautiful and functional **To-Do List Web Application** built using **HTML, CSS, and JavaScript**. It helps you stay organized with categorized tasks, due dates, notes, and visual progress tracking.
