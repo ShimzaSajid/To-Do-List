@@ -66,7 +66,13 @@ function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+function formatDate(dateString) {
+  const options = { month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
 // 🖼️ Render Tasks
+
 function renderTasks(filter = "all") {
   ["work", "personal", "study"].forEach(cat => {
     document.getElementById(`${cat}-list`).innerHTML = "";
@@ -83,58 +89,79 @@ function renderTasks(filter = "all") {
     li.className = `task-item${task.completed ? " completed" : ""}`;
 
     li.innerHTML = `
-      <input type="checkbox" ${task.completed ? "checked" : ""} data-id="${task.id}">
-      <span class="task-text">${task.text}</span>
-      ${task.dueDate ? `<span class="due-date">📆 ${task.dueDate}</span>` : ""}
-      <div class="task-actions">
-        <button class="edit-btn" data-id="${task.id}">✏️</button>
-        <button onclick="deleteTask(${task.id})">🗑️</button>
+      <div class="task-item-top">
+        <input type="checkbox" ${task.completed ? "checked" : ""} data-id="${task.id}">
+        <span class="task-text">${task.text}</span>
+      </div>
+      <div class="task-item-bottom">
+        ${task.dueDate ? `<span class="due-date">📆 ${formatDate(task.dueDate)}</span>` : '<span></span>'}
+        <div class="task-actions">
+          <button class="edit-btn" data-id="${task.id}">✏️</button>
+          <button class="delete-btn" data-id="${task.id}">🗑️</button>
+        </div>
       </div>
     `;
 
     // ✅ Complete Task
-    li.querySelector('input[type="checkbox"]').addEventListener("change", e => {
-      const id = Number(e.target.dataset.id);
-      const t = tasks.find(t => t.id === id);
-      t.completed = e.target.checked;
+    li.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
+      const taskToUpdate = tasks.find(t => t.id === task.id);
+      if (taskToUpdate) {
+        taskToUpdate.completed = e.target.checked;
+        saveAndRender();
+      }
+    });
+
+    // 🗑️ Delete Task
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+      tasks = tasks.filter(t => t.id !== task.id);
       saveAndRender();
     });
 
     // ✏️ Inline Edit
-    li.querySelector(".edit-btn").addEventListener("click", (e) => {
-      const id = Number(e.target.dataset.id);
-      const taskSpan = li.querySelector(".task-text");
+   // ✏️ Inline Edit (improved version)
+li.querySelector(".edit-btn").addEventListener("click", (e) => {
+  const span = li.querySelector(".task-text");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = span.textContent;
+  input.className = "editing-input";
+  
+  span.replaceWith(input);
+  input.focus();
+  
+  const handleEditComplete = () => {
+    const newText = input.value.trim();
+    if (newText) {
+      tasks.find(t => t.id === task.id).text = newText;
+      saveAndRender();
+    }
+  };
+  
+  const cleanUp = () => {
+    input.removeEventListener("blur", handleEditComplete);
+    input.removeEventListener("keydown", handleKeydown);
+  };
+  
+  const handleKeydown = (e) => {
+    if (e.key === "Enter") {
+      handleEditComplete();
+      cleanUp();
+    }
+    if (e.key === "Escape") {
+      cleanUp();
+      saveAndRender(); // Re-render to show original text
+    }
+  };
+  
+  input.addEventListener("blur", handleEditComplete);
+  input.addEventListener("keydown", handleKeydown);
+});
 
-      const input = document.createElement("input");
-      input.type = "text";
-      input.value = taskSpan.textContent;
-      input.className = "editing-input";
-
-      taskSpan.replaceWith(input);
-      input.focus();
-
-      input.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          const updatedText = input.value.trim();
-          if (updatedText !== "") {
-            const t = tasks.find(t => t.id === id);
-            t.text = updatedText;
-            saveAndRender();
-          }
-        }
-      });
-    });
-
-    // 📂 Append to Category
     document.getElementById(`${task.category.toLowerCase()}-list`).appendChild(li);
   });
 }
 
-// 🗑️ Delete Task
-function deleteTask(id) {
-  tasks = tasks.filter(task => task.id !== id);
-  saveAndRender();
-}
+
 
 // 🔄 Save + Render All
 function saveAndRender() {
