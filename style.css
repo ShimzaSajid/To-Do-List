@@ -103,33 +103,42 @@ h1 {
 
 .task-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
+  flex-direction: column;
+  padding: 12px;
+  gap: 8px;
   border: 1px solid #ffdce6;
   border-radius: 12px;
   margin-bottom: 10px;
   background-color: #fff;
-  width: 100%;
-  flex-wrap: nowrap;
   transition: background-color 0.2s;
 }
+.task-item-top {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
+.task-item-bottom {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 .task-item:hover {
   background-color: #fff0f5;
 }
 
 .task-item input[type="checkbox"] {
-  margin-right: 12px;
+  margin-right: 10px;
   transform: scale(1.2);
   accent-color: #4caf50;
 }
 
+
 .task-text {
   flex: 1;
-  font-size: 1rem;
-  margin-right: 10px;
+  white-space: normal;
   word-break: break-word;
+  font-size: 1rem;
 }
 
 .completed .task-text {
@@ -140,8 +149,8 @@ h1 {
 .task-actions {
   display: flex;
   gap: 8px;
-  align-items: center;
-  padding-left: 10px;
+  /* align-items: center;
+  padding-left: 10px; */
 }
 
 .task-actions button {
@@ -253,12 +262,8 @@ h1 {
   background-color: #fff0f0;
   border-radius: 8px;
   padding: 3px 8px;
-  margin-left: 10px;
   font-size: 0.85rem;
   color: #e23e57;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
 }
 
 .due-label {
@@ -290,10 +295,15 @@ h1 {
 }
 
 @media screen and (max-width: 480px) {
-  .container {
-    width: 95%;
-    padding: 20px;
+.container {
+    width: 98%; /* Increased from 95% to nearly full width */
+    padding: 20px 15px; /* Slightly reduced side padding */
     margin: 10px auto;
+    border-radius: 15px; /* Slightly smaller radius for mobile */
+  }
+
+.category-box {
+    min-width: 100%;
   }
   .input-section {
     flex-direction: column;
@@ -309,19 +319,18 @@ h1 {
   }
 
   .task-item {
-    flex-direction: column;
-    align-items: flex-start;
+       padding: 10px;
   }
 
   .task-actions {
-    align-self: flex-end;
-    margin-top: 5px;
-    padding-right: 0;
+  align-self: flex-end;
   }
-
+.task-item-bottom {
+    flex-direction: column;
+    gap: 8px;
+  }
   .due-date {
-    margin-top: 4px;
-    margin-bottom: 4px;
+   align-self: flex-start;
   }
 }
 
